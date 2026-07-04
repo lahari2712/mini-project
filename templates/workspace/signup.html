@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}AuraEMS - Create Account{% endblock %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="glass-panel auth-container p-4 p-md-5 rounded-4 shadow" style="max-width: 540px; width: 100%;">
+        <div class="auth-header text-center mb-4">
+            <a href="{% url 'landing' %}" class="sidebar-logo justify-content-center mb-3">
+                <i class="fa-solid fa-users-gear" style="color: var(--accent-purple); margin-right: 6px;"></i>
+                <span>AuraEMS</span>
+            </a>
+            <h2 class="fw-bold">Initialize Profile</h2>
+            <p class="text-secondary">Join the collaborative team workspace</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger p-3 mb-3 border-danger-subtle rounded-3 text-center" style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--accent-red);">
+                {% for error in form.non_field_errors %}
+                <p class="text-danger m-0" style="font-size: 0.8rem;">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-group mb-3">
+                <label for="{{ form.username.id_for_label }}" class="form-label text-secondary fw-semibold mb-1" style="font-size: 0.85rem;">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <p class="text-danger mt-1 mb-0" style="font-size: 0.75rem;">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="{{ form.email.id_for_label }}" class="form-label text-secondary fw-semibold mb-1" style="font-size: 0.85rem;">Email Address</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <p class="text-danger mt-1 mb-0" style="font-size: 0.75rem;">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6 form-group">
+                    <label for="{{ form.password.id_for_label }}" class="form-label text-secondary fw-semibold mb-1" style="font-size: 0.85rem;">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                    <p class="text-danger mt-1 mb-0" style="font-size: 0.75rem;">{{ form.password.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="{{ form.confirm_password.id_for_label }}" class="form-label text-secondary fw-semibold mb-1" style="font-size: 0.85rem;">Confirm Password</label>
+                    {{ form.confirm_password }}
+                    {% if form.confirm_password.errors %}
+                    <p class="text-danger mt-1 mb-0" style="font-size: 0.75rem;">{{ form.confirm_password.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-7 form-group">
+                    <label for="{{ form.role.id_for_label }}" class="form-label text-secondary fw-semibold mb-1" style="font-size: 0.85rem;">Workspace Role</label>
+                    {{ form.role }}
+                </div>
+                <div class="col-md-5 form-group">
+                    <label for="{{ form.avatar.id_for_label }}" class="form-label text-secondary fw-semibold mb-1" style="font-size: 0.85rem;">Avatar Symbol</label>
+                    {{ form.avatar }}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="{{ form.bio.id_for_label }}" class="form-label text-secondary fw-semibold mb-1" style="font-size: 0.85rem;">Short Bio</label>
+                {{ form.bio }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-3 py-3">
+                Create Account &amp; Join <i class="fa-solid fa-user-plus" style="margin-left: 6px;"></i>
+            </button>
+        </form>
+
+        <div class="auth-footer text-center mt-4" style="font-size: 0.85rem;">
+            <p class="text-secondary">Already have an account? <a href="{% url 'login' %}" style="color: var(--accent-purple); font-weight: 600;">Sign In</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

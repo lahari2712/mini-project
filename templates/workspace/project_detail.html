@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block title %}AetherSync - {{ project.title }}{% endblock %}
+
+{% block content %}
+<!-- Back to Dashboard & Actions Header -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;">
+        <i class="fa-solid fa-arrow-left"></i> Dashboard
+    </a>
+
+    {% if request.user == project.owner or request.user.is_superuser %}
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'project_update' project.pk %}" class="btn btn-secondary"
+            style="padding: 8px 16px; font-size: 0.85rem;">
+            <i class="fa-solid fa-gear"></i> Edit Project
+        </a>
+        <a href="{% url 'project_delete' project.pk %}" class="btn btn-danger"
+            style="padding: 8px 16px; font-size: 0.85rem; background: var(--accent-red);">
+            <i class="fa-solid fa-trash"></i> Delete Workspace
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Project Overview Card -->
+<div class="glass-panel" style="padding: 30px; margin-bottom: 30px; border-color: rgba(139, 92, 246, 0.15);">
+    <div
+        style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+        <div>
+            <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 8px;">{{ project.title }}</h1>
+            <p style="color: var(--text-secondary); line-height: 1.6; max-width: 800px;">{{ project.description }}</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <span class="badge badge-{{ project.priority }}">{{ project.priority }} Priority</span>
+            <span class="badge badge-{{ project.status }}">{{ project.status }}</span>
+        </div>
+    </div>
+
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+        <div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Workspace Owner</p>
+            <h4 style="font-size: 0.95rem; margin-top: 4px;"><i class="fa-solid fa-user-tie"
+                    style="color: var(--accent-purple); margin-right: 4px;"></i> {{ project.owner.username }}</h4>
+        </div>
+        <div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Workspace Deadline</p>
+            <h4 style="font-size: 0.95rem; margin-top: 4px;"><i class="fa-regular fa-calendar-xmark"
+                    style="color: var(--accent-red); margin-right: 4px;"></i> {{ project.deadline|date:"M d, Y" }}</h4>
+        </div>
+        <div style="grid-column: span 2;">
+            <div class="progress-header">
+                <span>Total Work Completed</span>
+                <span>{{ project.progress_percentage }}%</span>
+            </div>
+            <div class="progress-bar-container" style="height: 10px;">
+                <div class="progress-bar-fill" style="width: 0%;" data-progress="{{ project.progress_percentage }}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kanban Board Header -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; margin-bottom: 10px;">
+    <div>
+        <h2 style="font-size: 1.4rem; font-weight: 700;"><i class="fa-solid fa-square-poll-horizontal"
+                style="color: var(--accent-blue); margin-right: 6px;"></i> Interactive Task Kanban Board</h2>
+        <p style="color: var(--text-secondary); font-size: 0.85rem;">Organize workflows, assign engineers, and update
+            statuses.</p>
+    </div>
+    <a href="{% url 'task_create' project.pk %}" class="btn btn-primary"
+        style="padding: 10px 18px; font-size: 0.85rem;">
+        <i class="fa-solid fa-plus"></i> Add New Task
+    </a>
+</div>
+
+<!-- Kanban Columns -->
+<div class="kanban-board">
+
+    <!-- Backlog Column -->
+    <div class="glass-panel kanban-column">
+        <div class="kanban-column-header">
+            <div class="kanban-column-title">
+                <i class="fa-regular fa-circle" style="color: var(--text-secondary);"></i>
+                <span>Backlog</span>
+            </div>
+            <span class="count-indicator">{{ backlog_tasks.count }}</span>
+        </div>
+        <div class="kanban-cards">
+            {% for task in backlog_tasks %}
+            {% include 'workspace/includes/task_card.html' with task=task %}
+            {% empty %}
+            <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 20px 0;">No tasks in
+                backlog</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- In Progress Column -->
+    <div class="glass-panel kanban-column">
+        <div class="kanban-column-header">
+            <div class="kanban-column-title">
+                <i class="fa-solid fa-spinner"
+                    style="color: var(--accent-blue); animation: spin 4s linear infinite;"></i>
+                <span>In Progress</span>
+            </div>
+            <span class="count-indicator">{{ in_progress_tasks.count }}</span>
+        </div>
+        <div class="kanban-cards">
+            {% for task in in_progress_tasks %}
+            {% include 'workspace/includes/task_card.html' with task=task %}
+            {% empty %}
+            <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 20px 0;">No active tasks
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- In Review Column -->
+    <div class="glass-panel kanban-column">
+        <div class="kanban-column-header">
+            <div class="kanban-column-title">
+                <i class="fa-solid fa-circle-notch" style="color: var(--accent-purple);"></i>
+                <span>In Review</span>
+            </div>
+            <span class="count-indicator">{{ in_review_tasks.count }}</span>
+        </div>
+        <div class="kanban-cards">
+            {% for task in in_review_tasks %}
+            {% include 'workspace/includes/task_card.html' with task=task %}
+            {% empty %}
+            <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 20px 0;">No items
+                pending review</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Completed Column -->
+    <div class="glass-panel kanban-column">
+        <div class="kanban-column-header">
+            <div class="kanban-column-title">
+                <i class="fa-regular fa-circle-check" style="color: var(--accent-green);"></i>
+                <span>Completed</span>
+            </div>
+            <span class="count-indicator">{{ completed_tasks.count }}</span>
+        </div>
+        <div class="kanban-cards">
+            {% for task in completed_tasks %}
+            {% include 'workspace/includes/task_card.html' with task=task %}
+            {% empty %}
+            <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 20px 0;">No completed
+                tasks</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<!-- Team Discussions/Comments Area -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 50px; align-items: start;">
+
+    <!-- Comment Thread List -->
+    <div class="glass-panel comments-panel">
+        <h3
+            style="font-size: 1.15rem; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+            <i class="fa-regular fa-comments" style="color: var(--accent-purple); margin-right: 6px;"></i> Workspace
+            Discussion
+        </h3>
+
+        <div class="comments-list">
+            {% for comment in comments %}
+            <div class="comment-card">
+                <div class="avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                    {% if comment.author.profile.avatar == 'avatar-1' %}🎯
+                    {% elif comment.author.profile.avatar == 'avatar-2' %}🔮
+                    {% elif comment.author.profile.avatar == 'avatar-3' %}🌱
+                    {% elif comment.author.profile.avatar == 'avatar-4' %}🔥
+                    {% elif comment.author.profile.avatar == 'avatar-5' %}🧬
+                    {% else %}💻{% endif %}
+                </div>
+                <div class="comment-body">
+                    <h5>
+                        {{ comment.author.username }}
+                        <span class="badge badge-planning"
+                            style="font-size: 0.65rem; margin-left: 5px; text-transform: capitalize;">{{
+                            comment.author.profile.role }}</span>
+                        <span class="comment-time">&bull; {{ comment.created_at|timesince }} ago</span>
+                    </h5>
+                    <p class="comment-content">{{ comment.content }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <p style="color: var(--text-muted); text-align: center; font-size: 0.85rem; padding: 30px 0;">No comments
+                posted yet. Begin the collaboration below!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Post Comment Box -->
+    <div class="glass-panel" style="padding: 24px;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 15px;">Post Update</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="comment_submit" value="1">
+            <div class="form-group">
+                {{ comment_form.content }}
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 0.85rem; padding: 10px;">
+                Send Comment <i class="fa-regular fa-paper-plane" style="margin-left: 5px;"></i>
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<!-- CSS Spin Animation -->
+<style>
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.progress-bar-fill').forEach(el => {
+            const progress = el.getAttribute('data-progress');
+            el.style.width = progress + '%';
+        });
+    });
+</script>
+{% endblock %}

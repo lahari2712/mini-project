@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AuraEMS - Premium Employee Management System{% endblock %}
+
+{% block content %}
+<div class="landing-container container-xl">
+    <!-- Navbar -->
+    <header class="landing-nav d-flex justify-content-between align-items-center py-4 mb-5">
+        <div class="sidebar-logo m-0 d-flex align-items-center">
+            <i class="fa-solid fa-users-gear" style="color: var(--accent-purple); margin-right: 6px;"></i>
+            <span>AuraEMS</span>
+        </div>
+        <div class="d-flex gap-3">
+            <a href="{% url 'login' %}" class="btn btn-secondary px-3 py-2" style="font-size: 0.85rem;">Sign In</a>
+            <a href="{% url 'signup' %}" class="btn btn-primary px-3 py-2" style="font-size: 0.85rem;">Sign Up</a>
+        </div>
+    </header>
+
+    <!-- Hero Area -->
+    <section class="landing-hero row align-items-center gy-5 my-5">
+        <div class="col-lg-6 text-start">
+            <div class="hero-tagline text-uppercase mb-2" style="color: var(--accent-purple); font-weight: 700; font-size: 0.9rem; letter-spacing: 2px;">Administrative Control</div>
+            <h1 class="hero-title display-4 fw-bold mb-3">Organize Your Workforce.</h1>
+            <p class="hero-desc mb-4 text-secondary" style="line-height: 1.6; font-size: 1.1rem;">
+                Experience high-fidelity employee database tracking, department analytics, salary statistics, and administrative controls wrapped in an Obsidian glassmorphism layout designed for premium corporate environments.
+            </p>
+            <div class="hero-actions d-flex gap-3">
+                <a href="{% url 'signup' %}" class="btn btn-primary px-4 py-3">Get Started Free <i class="fa-solid fa-arrow-right-long" style="margin-left: 5px;"></i></a>
+                <a href="{% url 'login' %}" class="btn btn-secondary px-4 py-3">Access Console</a>
+            </div>
+        </div>
+        
+        <!-- Interactive Mockup Visualizer -->
+        <div class="col-lg-6">
+            <div class="glass-panel p-4 d-flex flex-column justify-content-between" style="height: 350px; border-color: rgba(139, 92, 246, 0.2); box-shadow: 0 0 40px 0 rgba(139, 92, 246, 0.15);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex gap-2">
+                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #eab308; display: inline-block;"></span>
+                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                    </div>
+                    <div class="badge badge-active">Corporate Portal</div>
+                </div>
+                
+                <div class="my-4">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 6px;">Total Registered Staff</h3>
+                    <h2 style="font-size: 2.2rem; font-weight: 800; background: linear-gradient(90deg, var(--text-primary), var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">148 Employees</h2>
+                    <div class="d-flex justify-content-between text-secondary mt-2" style="font-size: 0.75rem;">
+                        <span>Active: 142</span>
+                        <span>On Leave: 6</span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                    <div class="d-flex align-items-center gap-2 text-secondary" style="font-size: 0.8rem;">
+                        <i class="fa-solid fa-chart-line" style="color: var(--accent-purple);"></i>
+                        <span>Department Analytics: Engineering leads (45%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="text-align: center; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 30px;">
+        <p>&copy; 2026 AuraEMS. Powered by Django &amp; Glassmorphism CSS.</p>
+    </footer>
+</div>
+{% endblock %}

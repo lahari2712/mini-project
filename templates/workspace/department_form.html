@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}AuraEMS - Department Configuration{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'department_list' %}" class="btn btn-secondary py-2 px-3">
+        <i class="fa-solid fa-arrow-left me-1"></i> Back to Departments
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 p-4 bg-white" style="max-width: 600px;">
+    <h3 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-sitemap text-primary me-2"></i> {{ title }}</h3>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label fw-semibold small text-secondary">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <div class="form-text text-muted small">{{ field.help_text }}</div>
+            {% endif %}
+            {% if field.errors %}
+            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="btn btn-primary flex-grow-1 py-2.5">Save Department</button>
+            <a href="{% url 'department_list' %}" class="btn btn-secondary flex-grow-1 py-2.5 text-center">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}AuraEMS - {{ employee.full_name }} Profile{% endblock %}
+
+{% block content %}
+<!-- Back to Dashboard & Actions Header -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;">
+        <i class="fa-solid fa-arrow-left"></i> Console Registry
+    </a>
+    
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'employee_update' employee.pk %}" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;">
+            <i class="fa-solid fa-user-pen"></i> Edit Record
+        </a>
+        <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-danger" style="padding: 8px 16px; font-size: 0.85rem; background: var(--accent-red);">
+            <i class="fa-solid fa-user-xmark"></i> Delete Employee
+        </a>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center" style="max-width: 1100px; margin: 0 auto;">
+    
+    <!-- Profile Card (Left Panel) -->
+    <div class="col-md-4">
+        <div class="glass-panel p-4 text-center">
+            <div class="avatar d-flex align-items-center justify-content-center rounded-circle border-3 shadow" style="width: 100px; height: 100px; font-size: 3.2rem; margin: 0 auto 20px auto; border-width: 3px; box-shadow: 0 0 20px 0 var(--accent-purple-glow);">
+                {% if employee.avatar == 'avatar-1' %}🎯
+                {% elif employee.avatar == 'avatar-2' %}🔮
+                {% elif employee.avatar == 'avatar-3' %}🌱
+                {% elif employee.avatar == 'avatar-4' %}🔥
+                {% elif employee.avatar == 'avatar-5' %}🧬
+                {% else %}💻{% endif %}
+            </div>
+            
+            <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 4px;">{{ employee.full_name }}</h2>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 12px;">{{ employee.designation }}</p>
+            
+            <div class="mb-3">
+                <span class="badge badge-medium me-1">{{ employee.department }}</span>
+                <span class="badge badge-{{ employee.status }}">{{ employee.status }}</span>
+            </div>
+            
+            {% if employee.bio %}
+            <p class="text-secondary p-3 border-top text-start" style="font-size: 0.9rem; line-height: 1.5; border-color: var(--border-color) !important;">
+                "{{ employee.bio }}"
+            </p>
+            {% else %}
+            <p class="text-muted p-3 border-top text-center style-italic" style="font-size: 0.85rem; font-style: italic; border-color: var(--border-color) !important;">
+                No personal overview or bio notes added for this employee record.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Details Card (Right Panel) -->
+    <div class="col-md-8 d-flex flex-column gap-4">
+        <div class="glass-panel p-4 p-md-5">
+            <h2 class="form-title mt-0 pb-2 border-bottom mb-4" style="border-color: var(--border-color) !important;"><i class="fa-regular fa-folder-open" style="color: var(--accent-purple); margin-right: 8px;"></i> Employment Profile</h2>
+            
+            <div class="row g-4">
+                <div class="col-sm-6">
+                    <p class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">Email Address</p>
+                    <h4 class="fw-semibold m-0" style="font-size: 1rem;"><i class="fa-regular fa-envelope" style="color: var(--accent-blue); margin-right: 6px;"></i> {{ employee.email }}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <p class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">Contact Number</p>
+                    <h4 class="fw-semibold m-0" style="font-size: 1rem;"><i class="fa-solid fa-phone" style="color: var(--accent-blue); margin-right: 6px;"></i> {{ employee.phone }}</h4>
+                </div>
+                <div class="col-sm-6">
+                    <p class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">Active Salary</p>
+                    <h4 class="fw-bold text-light m-0" style="font-size: 1.1rem;"><i class="fa-solid fa-wallet" style="color: var(--accent-green); margin-right: 6px;"></i> ${{ employee.salary }} / Year</h4>
+                </div>
+                <div class="col-sm-6">
+                    <p class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">Hire Date</p>
+                    <h4 class="fw-semibold m-0" style="font-size: 1rem;"><i class="fa-regular fa-calendar-days" style="color: var(--accent-purple); margin-right: 6px;"></i> {{ employee.date_joined|date:"F d, Y" }}</h4>
+                </div>
+            </div>
+            
+            <div class="mt-4 pt-3 border-top text-secondary" style="font-size: 0.85rem; border-color: var(--border-color) !important;">
+                <span>Record Created By: <strong>{{ employee.created_by.username }}</strong> &bull; Registered At: {{ employee.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+
+        <!-- History Timeline -->
+        <div class="glass-panel p-4">
+            <h3 class="fs-6 fw-bold mb-3 pb-2 border-bottom" style="border-color: var(--border-color) !important;"><i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-purple); margin-right: 6px;"></i> Profile Log Timeline</h3>
+            {% if logs %}
+            <div class="timeline mt-3">
+                {% for log in logs %}
+                <div class="timeline-item">
+                    <div class="timeline-item-time text-muted mb-1" style="font-size: 0.7rem;">{{ log.created_at|date:"F d, Y - H:i" }}</div>
+                    <div class="timeline-item-desc" style="font-size: 0.85rem;">
+                        Coordinator <strong>{{ log.user.username }}</strong> {{ log.action }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-2 m-0" style="font-size: 0.85rem; font-style: italic;">No specific timeline log entries for this employee.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

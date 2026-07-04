@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}AuraEMS - Employees{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold m-0 text-dark"><i class="fa-solid fa-user-group text-primary me-2"></i> Employee Directory</h2>
+        <p class="text-secondary small m-0">View, search, filter and manage all registered company employees.</p>
+    </div>
+    <a href="{% url 'employee_create' %}" class="btn btn-primary">
+        <i class="fa-solid fa-plus me-1"></i> Add Employee
+    </a>
+</div>
+
+<!-- Filters Panel -->
+<div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+    <form method="GET" action="{% url 'employee_list' %}" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold small text-secondary">Search Keyword</label>
+            <input type="text" name="search" class="form-control" placeholder="ID, Name, Email, Designation..." value="{{ query }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-semibold small text-secondary">Department</label>
+            <select name="department" class="form-select">
+                <option value="">All Departments</option>
+                {% for dept in departments %}
+                <option value="{{ dept.pk }}" {% if dept_filter == dept.pk|stringformat:"i" %}selected{% endif %}>{{ dept.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-semibold small text-secondary">Status</label>
+            <select name="status" class="form-select">
+                <option value="">All Statuses</option>
+                <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                <option value="on_leave" {% if status_filter == 'on_leave' %}selected{% endif %}>On Leave</option>
+                <option value="terminated" {% if status_filter == 'terminated' %}selected{% endif %}>Terminated</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100 py-2">Apply Filters</button>
+        </div>
+    </form>
+</div>
+
+<!-- Employees Table -->
+<div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr class="text-secondary small fw-bold" style="border-bottom: 2px solid #f1f5f9;">
+                    <th class="py-2">Employee ID</th>
+                    <th class="py-2">Employee Name</th>
+                    <th class="py-2">Department</th>
+                    <th class="py-2">Designation</th>
+                    <th class="py-2">Salary</th>
+                    <th class="py-2">Status</th>
+                    <th class="py-2 text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if employees %}
+                    {% for emp in employees %}
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td><strong class="text-primary">{{ emp.employee_id }}</strong></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold bg-primary bg-opacity-10 text-primary" style="width: 40px; height: 40px; font-size: 1.1rem; overflow: hidden;">
+                                    {% if emp.photo %}
+                                        <img src="{{ emp.photo.url }}" alt="Photo" class="w-100 h-100 object-fit-cover">
+                                    {% else %}
+                                        👤
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h6 class="m-0 fw-semibold text-dark">{{ emp.full_name }}</h6>
+                                    <small class="text-muted">{{ emp.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2.5 py-1 small fw-semibold">
+                                {{ emp.department.name|default:"Unassigned" }}
+                            </span>
+                        </td>
+                        <td class="text-secondary">{{ emp.designation }}</td>
+                        <td class="fw-semibold text-dark">${{ emp.salary }}</td>
+                        <td>
+                            {% if emp.status == 'active' %}
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2.5 py-1 small fw-bold">Active</span>
+                            {% elif emp.status == 'inactive' %}
+                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2.5 py-1 small fw-bold">Inactive</span>
+                            {% elif emp.status == 'on_leave' %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2.5 py-1 small fw-bold">On Leave</span>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2.5 py-1 small fw-bold">Terminated</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{% url 'employee_detail' emp.pk %}" class="btn btn-light btn-sm d-flex align-items-center justify-content-center rounded-2 p-1.5" style="width: 28px; height: 28px;"><i class="fa-regular fa-eye" style="font-size: 0.75rem;"></i></a>
+                                <a href="{% url 'employee_update' emp.pk %}" class="btn btn-warning btn-sm text-white d-flex align-items-center justify-content-center rounded-2 p-1.5" style="width: 28px; height: 28px; background-color: var(--accent-orange); border: none;"><i class="fa-solid fa-pen" style="font-size: 0.75rem;"></i></a>
+                                <a href="{% url 'employee_delete' emp.pk %}" class="btn btn-danger btn-sm d-flex align-items-center justify-content-center rounded-2 p-1.5" style="width: 28px; height: 28px; background-color: var(--accent-red); border: none;"><i class="fa-regular fa-trash-can" style="font-size: 0.75rem;"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No employees found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="d-flex justify-content-between align-items-center mt-4">
+        <span class="small text-muted">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} employees</span>
+        <ul class="pagination pagination-sm m-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&search={{ query }}{% endif %}{% if dept_filter %}&department={{ dept_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}{% if query %}&search={{ query }}{% endif %}{% if dept_filter %}&department={{ dept_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&search={{ query }}{% endif %}{% if dept_filter %}&department={{ dept_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
