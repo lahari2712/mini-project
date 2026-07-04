@@ -1,0 +1,42 @@
+<header class="top-navbar d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light d-md-none" id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        <div class="search-bar-wrapper">
+            <form method="GET" action="{% url 'dashboard' %}" class="input-group" style="width: 320px;">
+                <input type="text" name="search" class="form-control border-end-0 bg-light" placeholder="Search employees, departments..." value="{{ query|default:'' }}">
+                <button type="submit" class="input-group-text bg-light border-start-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <div class="position-relative cursor-pointer mx-1">
+            <i class="fa-regular fa-bell fs-5 text-muted"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="padding: 3px 6px; font-size: 0.55rem;">3</span>
+        </div>
+        <div class="position-relative cursor-pointer mx-1">
+            <i class="fa-regular fa-envelope fs-5 text-muted"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-primary" style="padding: 3px 6px; font-size: 0.55rem;">5</span>
+        </div>
+        <div class="d-flex align-items-center gap-2 border-start ps-3 ms-2">
+            <div class="avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); font-size: 1.1rem;">
+                {% if user.profile %}
+                    {% if user.profile.avatar == "avatar-1" %}🎯
+                    {% elif user.profile.avatar == "avatar-2" %}🔮
+                    {% elif user.profile.avatar == "avatar-3" %}🌱
+                    {% elif user.profile.avatar == "avatar-4" %}🔥
+                    {% elif user.profile.avatar == "avatar-5" %}🧬
+                    {% else %}💻{% endif %}
+                {% else %}
+                    👤
+                {% endif %}
+            </div>
+            <div class="d-none d-md-block text-start">
+                <h6 class="m-0 fw-semibold text-dark" style="font-size: 0.85rem;">{{ user.username }}</h6>
+                <small class="text-muted" style="font-size: 0.7rem;">
+                    {% if user.profile %}{{ user.profile.role }}{% else %}Administrator{% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,91 @@
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand d-flex align-items-center gap-2 p-4">
+        <i class="fa-solid fa-users-gear text-info fs-3"></i>
+        <div>
+            <h5 class="m-0 fw-bold text-light">AuraEMS</h5>
+            <small class="text-secondary" style="font-size: 0.7rem;">Employee Management System</small>
+        </div>
+    </div>
+
+    <div class="sidebar-menu-wrapper flex-grow-1 px-3">
+        <ul class="sidebar-menu list-unstyled p-0 m-0">
+            <li class="mb-3">
+                <a href="{% url 'dashboard' %}" class="sidebar-link d-flex align-items-center gap-2 py-2 px-3 rounded text-decoration-none {% if request.resolver_match and request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="sidebar-section-header text-secondary text-uppercase fw-semibold mb-2 px-3" style="font-size: 0.7rem; letter-spacing: 1px;">MAIN</li>
+            
+            <li class="mb-2">
+                <a href="{% url 'dashboard' %}" class="sidebar-link d-flex align-items-center justify-content-between py-2 px-3 rounded text-decoration-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span>Employees</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+                </a>
+            </li>
+            
+            <li class="mb-2">
+                <a href="{% url 'department_list' %}" class="sidebar-link d-flex align-items-center justify-content-between py-2 px-3 rounded text-decoration-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-sitemap"></i>
+                        <span>Departments</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+                </a>
+            </li>
+            
+            <li class="mb-3">
+                <a href="{% url 'dashboard' %}" class="sidebar-link d-flex align-items-center justify-content-between py-2 px-3 rounded text-decoration-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <span>Reports</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+                </a>
+            </li>
+
+            <li class="sidebar-section-header text-secondary text-uppercase fw-semibold mb-2 px-3" style="font-size: 0.7rem; letter-spacing: 1px;">USER</li>
+            
+            <li class="mb-2">
+                <a href="{% url 'profile' %}" class="sidebar-link d-flex align-items-center gap-2 py-2 px-3 rounded text-decoration-none {% if request.resolver_match and request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                    <i class="fa-regular fa-circle-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            
+            <li class="mb-3">
+                <a href="{% url 'profile' %}" class="sidebar-link d-flex align-items-center gap-2 py-2 px-3 rounded text-decoration-none">
+                    <i class="fa-solid fa-key"></i>
+                    <span>Change Password</span>
+                </a>
+            </li>
+
+            <li class="sidebar-section-header text-secondary text-uppercase fw-semibold mb-2 px-3" style="font-size: 0.7rem; letter-spacing: 1px;">SYSTEM</li>
+            
+            <li class="mb-2">
+                <a href="{% url 'profile' %}" class="sidebar-link d-flex align-items-center justify-content-between py-2 px-3 rounded text-decoration-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Settings</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+                </a>
+            </li>
+            
+            <li class="mb-2">
+                <a href="{% url 'logout' %}" class="sidebar-link d-flex align-items-center gap-2 py-2 px-3 rounded text-decoration-none">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="sidebar-footer p-3 text-center text-secondary border-top border-secondary-subtle" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.05) !important;">
+        &copy; 2024 AuraEMS<br><span style="font-size: 0.65rem;">All rights reserved.</span>
+    </div>
+</aside>
